@@ -1,15 +1,47 @@
-"""!calc <equation> will return the google calculator result for <equation>"""
-from bs4 import BeautifulSoup
+"""fs command will return the CounterACT result for <command>"""
 import re
-try:
-    from urllib import quote
-except ImportError:
-    from urllib.request import quote
-import requests
+from pyFS import pyFS
 
-def fs(eq):
+ca = pyFS('fsconfig.yml')
 
-    answer = "This is the answer to your message %s" %eq
+
+## Supported Commands: 
+## list hosts 
+## list host <ip>  
+def fslist(cmd):
+	pass 
+
+def fscount(cmd):
+	pass
+
+def fshelp(cmd):
+
+	_help = """
+	fs bot Usage: 
+	fs list hosts # Lists all Hosts IPs 
+	fs list host <ip> # List Properties of a certain host
+	fs count hosts 
+	fs count hostfields
+	fs count policies  
+	fs help 
+	"""
+	return _help 
+
+def fs(cmd):
+
+	match = re.findall(r"list (.*)", cmd)
+	if match: 
+		return fslist(match[0])
+
+	match = re.findall(r"count (.*)", cmd)
+	if match: 
+		return fscount(match[0])
+
+	match = re.findall(r"help (.*)", cmd)
+	if match: 
+		return fshelp(match[0])
+
+    answer = "Cannot understand command: %s" %cmd
     return answer
 
 def on_message(msg, server):
@@ -18,4 +50,4 @@ def on_message(msg, server):
     if not match:
         return
 
-    return fs(match[0].encode("utf8"))
+    return fs(match[0])
