@@ -1,5 +1,5 @@
 html5lib==0.9999999
-PyYAML==3.11
+PyYAML==3.12
 backports.ssl-match-hostname==3.4.0.2
 beautifulsoup4==4.4.1
 contextlib2==0.4.0
