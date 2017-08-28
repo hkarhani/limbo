@@ -41,8 +41,8 @@ def fs(cmd):
 	if match: 
 		return fshelp(match[0])
 
-    answer = "Cannot understand command: %s" %cmd
-    return answer
+	answer = "Cannot understand command: %s" %cmd
+	return answer
 
 def on_message(msg, server):
     text = msg.get("text", "")
