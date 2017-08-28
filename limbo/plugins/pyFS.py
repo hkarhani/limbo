@@ -204,7 +204,7 @@ class pyFS(object):
             if len(rulesList)>1: 
                 for ruleId in rulesList[1:len(rulesList)]:
                     req +=',%s' % ruleId
-                print req
+                return req
             
             resp = requests.get(req, headers=self.headers, verify=False)
             if resp.status_code == 200: 
