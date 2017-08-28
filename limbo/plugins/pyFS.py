@@ -9,9 +9,9 @@ import datetime as dt
 
 import shutil
 from requests.auth import HTTPBasicAuth
-from BeautifulSoup import BeautifulSoup
-from more_itertools import unique_everseen
-from urlparse import urljoin
+#from BeautifulSoup4 import BeautifulSoup
+#from more_itertools import unique_everseen
+#from urlparse import urljoin
 
 class pyFS(object):
     """ForeScout WebAPI wrapper Class:

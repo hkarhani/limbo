@@ -2,7 +2,7 @@
 import re
 from pyFS import pyFS
 
-ca = pyFS('fsconfig.yml')
+ca = pyFS('/app/limbo/plugins/fsconfig.yml')
 
 
 ## Supported Commands: 
