@@ -10,6 +10,7 @@ RUN apk-install python3 python3-dev vim bash    \
     && ln -s /usr/bin/python3 /usr/bin/python   \
     && mkdir -p /opt /app
 
+RUN pip install pyyaml
 ADD . /app
 WORKDIR /app
 RUN pip install -e .
