@@ -135,7 +135,7 @@ class pyFS(object):
             req = '%s/hostfields'% self.baseAPI
             resp = requests.get(req, headers=self.headers, verify=False)
             if resp.status_code == 200: 
-                jresp = json.loads(resp.content)
+                jresp = json.loads(resp.content.decode('utf-8'))
                 self.hostfields = jresp[u'hostFields']
                 self.hostfieldsTimeStamp = dt.datetime.now()
                 return True 
@@ -187,7 +187,8 @@ class pyFS(object):
             req = '%s/hosts'% self.baseAPI
             resp = requests.get(req, headers=self.headers, verify=False)
             if resp.status_code == 200: 
-                jresp = json.loads(resp.content)
+                #print(resp.content)
+                jresp = json.loads(resp.content.decode('utf-8'))
                 self.hosts = jresp[u'hosts']
                 self.hostsTimeStamp = dt.datetime.now()
                 return True 
@@ -208,7 +209,7 @@ class pyFS(object):
             
             resp = requests.get(req, headers=self.headers, verify=False)
             if resp.status_code == 200: 
-                jresp = json.loads(resp.content)
+                jresp = json.loads(resp.content.decode('utf-8'))
                 return jresp[u'hosts'] 
             else: 
                 return None 
@@ -221,7 +222,7 @@ class pyFS(object):
             req = '%s/policies'% self.baseAPI
             resp = requests.get(req, headers=self.headers, verify=False)
             if resp.status_code == 200: 
-                jresp = json.loads(resp.content)
+                jresp = json.loads(resp.content.decode('utf-8'))
                 self.policies = jresp[u'policies']
                 self.policiesTimeStamp = dt.datetime.now()
                 return True 
@@ -272,7 +273,7 @@ class pyFS(object):
             req = '%s/hosts/%s'% (self.baseAPI, hostid)
             resp = requests.get(req, headers=self.headers, verify=False)
             if resp.status_code == 200: 
-                jresp = json.loads(resp.content)
+                jresp = json.loads(resp.content.decode('utf-8'))
                 #self.hostsTimeStamp = dt.datetime.now()
                 return True, jresp[u'host']
             else: 
