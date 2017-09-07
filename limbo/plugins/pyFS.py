@@ -97,7 +97,25 @@ class pyFS(object):
         </FSAPI>
         """ %(epip, _property, _value)
         r = requests.post(postURL, headers=headers,auth=auth, data=post_data, verify=False)
-        return r.status_code == 200, r.content
+        return r.status_code == 200, r.content.decode('utf-8')
+    
+    def deleteDEX(self, auth, epip, _property): 
+        """Deletes via auth (result of initDEX) to CounterACT for Endpoint IP: epip, using property: _property"""
+        postURL = "https://%s/fsapi/niCore/Hosts" % self.counterAct
+        headers = {'Content-Type': 'application/xml', 'Accept': 'application/xml'}
+        endpointip = '10.0.2.51'
+        post_data = """<?xml version='1.0' encoding='utf-8'?>
+        <FSAPI TYPE="request" API_VERSION="1.0">
+            <TRANSACTION TYPE="delete">
+                <HOST_KEY NAME="ip" VALUE="%s"/>
+                <PROPERTIES>
+                    <PROPERTY NAME="%s" />
+                </PROPERTIES>
+            </TRANSACTION>
+        </FSAPI>
+        """ %(epip, _property)
+        r = requests.post(postURL, headers=headers,auth=auth, data=post_data, verify=False)
+        return r.status_code == 200, r.content.decode('utf-8')
          
     def login(self):
         """Login to CounterACT - check if token time > self.cacheLogin(5mins) to relogin automatically."""
@@ -143,6 +161,14 @@ class pyFS(object):
                 return False 
         else: 
             return False 
+        
+    def checkHostField(self, hf):
+        """Verifies if hf exists in HostFields extracted from CounterACT"""
+        if self.getAllHostsFields():
+            for field in self.hostfields:
+                if hf == str(field[u'name']):
+                    return True 
+        return False 
     
     def getHostFieldName(self, hf): 
         for hostfield in self.hostfields:
@@ -196,7 +222,24 @@ class pyFS(object):
                 return False 
         else: 
             return False 
-
+    
+    def gethostsByProp(self, prop, val): 
+        """Retrieves list of hosts with prop value equal to val from CounterACT webAPI."""
+        if self.login(): 
+            if self.checkHostField(prop):     
+                req = '%s/hosts?%s=%s'% (self.baseAPI, prop, val)
+                resp = requests.get(req, headers=self.headers, verify=False)
+                if resp.status_code == 200: 
+                    #print(resp.content)
+                    jresp = json.loads(resp.content.decode('utf-8'))
+                    return  jresp[u'hosts']
+                else: 
+                    return False
+            else:
+                return False
+        else: 
+            return False 
+        
     def gethostsByRules(self, rulesList): 
         """Retrieves list of hosts matching ruleIDs from CounterACT webAPI."""
         if self.login(): 

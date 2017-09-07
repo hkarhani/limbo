@@ -9,10 +9,27 @@ counterACT = pyFS('/app/limbo/plugins/fsconfig.yml')
 
 ## Supported Commands: 
 ## list hosts 
+## list hosts <ip filter>
+## list hosts prop <property> value <value> 
+
 ## list host properties <ip>
 ## list host fields <ip>  
+
+
 def fslist(cmd):
 	resp = ""
+
+	match = re.findall(r"hosts prop (.*) value (.*)", cmd)
+	if match:
+		prop = match[0][0]
+		val = match[0][1]
+		resp += "Listing Hosts with %s = %s :\n" % (prop, val)
+		_hosts = counterACT.gethostsByProp(prop, val)
+		if _hosts:
+			for host in _hosts:
+				resp += "%s\n" % host[u'ip']
+		return resp[:MAX_RESP]
+
 	match = re.findall(r"hosts (.*)", cmd)
 	if match:
 		resp += "Listing filtered Hosts:\n"
@@ -227,7 +244,18 @@ def fsupdate(cmd):
 
 	return "Can't understand your update command!"
 
+def fsdelete(cmd):
+	"""Deletes a Property Data via DEX Web-Services"""
 
+	match = re.findall(r"host (.*) property (.*)", cmd) 
+	if match: 
+		res, resp = counterACT.deleteDEX(counterACT.DEXAuth, match[0][0], match[0][1])
+		if res:  
+			return  "Success!\n" + resp
+		else: 
+			return  "Failure!\n" + resp
+
+	return "Can't understand your update command!"
 
 def fshelp(cmd):
 
@@ -238,7 +266,9 @@ def fshelp(cmd):
 	fs find mac <mac> 
 
 	fs list hosts 				  
-	fs list hosts <filter> 		 
+	fs list hosts <filter>
+	fs list hosts prop <property> value <value> 
+
 	fs list host <ip> properties 	 
 	fs list host <ip> match <pattern>  
 	fs list host <ip> fields 	
@@ -250,6 +280,7 @@ def fshelp(cmd):
 	fs count policies  
 
 	fs update host <ip> property <prop_name> value <new_value> 
+	fs delete host <ip> property <prop_name> 
 	
 	fs help 
 	"""
@@ -272,6 +303,10 @@ def fs(cmd):
 	match = re.findall(r"update (.*)", cmd)
 	if match: 
 		return fsupdate(match[0])
+
+	match = re.findall(r"delete (.*)", cmd)
+	if match: 
+		return fsdelete(match[0])
 
 	match = re.findall(r"help(.*)", cmd)
 	if match: 
