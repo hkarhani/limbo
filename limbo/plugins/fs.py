@@ -1,5 +1,7 @@
 """fs command will return the CounterACT result for <command>"""
 import re
+from socket import inet_aton, inet_ntoa
+
 
 import warnings; warnings.simplefilter('ignore')
 from pyFS import pyFS
@@ -33,11 +35,18 @@ def fslist(cmd):
 	match = re.findall(r"hosts (.*)", cmd)
 	if match:
 		resp += "Listing filtered Hosts:\n"
-		counterACT.gethosts()
-		for host in counterACT.hosts:
-			if host[u'ip'].find(str(match[0]))!= -1:
-				resp += "%s\n" % host[u'ip']
-		return resp[:MAX_RESP]
+		 # temp var (list) to generate sorted array of IP addresses filtered by given param
+                resulting_ip_list = []
+                counterACT.gethosts()
+                for host in counterACT.hosts:
+                        if host[u'ip'].find(str(match[0]))!= -1:
+                                resulting_ip_list.append(host[u'ip'])
+                # now convert IP addresses into binary straings and sort it, then convert it to readable IP addresses back and compose resulting string
+                for host in map(inet_ntoa, sorted(map(inet_aton, resulting_ip_list))):
+                        resp += "{0}\n".format(host)
+
+                return resp[:MAX_RESP]
+
 
 	match = re.findall(r"hosts(.*)", cmd)
 	if match:
